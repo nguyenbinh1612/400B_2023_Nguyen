@@ -1,44 +1,46 @@
-#!/usr/bin/env python
-# coding: utf-8
 
-# This imports the relevant modules: NumPy and AstroPy.
-
+# Load modules
 import numpy as np
 import astropy.units as u
 
-'''
-This function reads a data file that's formatted in the typical way that we expect in this class. In such 
-a file, the first line would be the time of the simulation, the second line the number of particles,
-the third line the header for each column, and from then on we have the actual data.
 
-Input: 
-filename: the name of the data file, obviously.
-
-Outputs:
-1. time: the time of the simulation (type: float)
-2. tot_no_particles: the total number of particles in the simulation (type: int)
-3. data: a NumPy array with all the data from the file (type: NumPy array)
-'''
-
+# Define a function that reads in the data file
+# USAGE :   time, total, data = Read("filename")
 def Read(filename):
-    # this line opens the data file
-    file = open(filename, 'r')
+
+	# open the file 
+	file = open(filename,'r')
     
-    # this part retrieves the time of the simulation, which is stored in the data file's 1st line
-    line1 = file.readline()
-    label, value = line1.split()
-    time = float(value)*u.Myr # This converts the time into a float with units of Myr
-        
-    # this part retrieves the particle number in the simulation, which is stored in the data file's 2nd line
-    line2 = file.readline()
-    label, value = line2.split()
-    tot_no_particles = int(value) # this saves the particle number as an integer
+	#read header info line by line (line will be a string)
+	# read first two lines FIRST and store as variable
     
-    # this line closes the data file
-    file.close
+	# read in first line and store time
+	line1 = file.readline()
+	label, value = line1.split()
+	time = float(value)*u.Myr
+
+	# read in 2nd line and store total number of particles
+	line2 = file.readline()
+	label, value = line2.split()
+	total = float(value)
     
-    # this line generates a big NumPy array from the data after the data file's 3rd line
-    data = np.genfromtxt(filename, dtype=None, names=True, skip_header=3)
+	# close file
+	file.close()
+	
+	# read the remainder of the file, 
+	# "dtype=None" means line is split using white spaces
+	# "skip_header=3"  skipping the first 3 lines 
+	# the flag "names=True" creates arrays to store the date
+	# with the column headers given in line 4 like "m", "x"
+	data = np.genfromtxt(filename,dtype=None,names=True,skip_header=3)
     
-    # this makes sure that the function returns the time, the particle number and the NumPy array
-    return time, tot_no_particles, data 
+	# return the time of the snapshot, 
+	# total number of particles 
+	#and an array that stores the remainder of the data. 
+	return time, total, data
+
+
+
+
+
+
